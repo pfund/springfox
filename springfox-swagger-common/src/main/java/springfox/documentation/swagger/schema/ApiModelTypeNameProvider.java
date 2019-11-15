@@ -37,13 +37,10 @@ public class ApiModelTypeNameProvider extends DefaultTypeNameProvider {
   @Override
   public String nameFor(Class<?> type) {
     ApiModel annotation = findAnnotation(type, ApiModel.class);
-    String defaultTypeName = super.nameFor(type);
-    if (annotation != null) {
-      return ofNullable(annotation.value())
+    return ofNullable(annotation)
+          .map(ApiModel::value)
           .filter(((Predicate<String>) String::isEmpty).negate())
-          .orElse(defaultTypeName);
-    }
-    return defaultTypeName;
+          .orElseGet(() -> super.nameFor(type));
   }
 
   @Override
